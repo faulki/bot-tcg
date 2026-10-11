@@ -135,7 +135,7 @@ def events_body(intro, events=None, error=None):
 def heartbeat(title, body, state):
     """Notification régulière sur le téléphone pour montrer que le bot tourne toujours."""
     log(f"Signe de vie envoyé sur le téléphone : {title}")
-    notify_phone(title, body, priority=3, tags=("white_check_mark",))
+    notify_phone(title, body, priority=config.HEARTBEAT_PRIORITY, tags=("white_check_mark",))
     state["dernier_signe_de_vie"] = time.time()
 
 
@@ -145,7 +145,7 @@ def notify_startup(title, state):
     except Exception as e:
         body = events_body(f"Je surveille « {title} ».", error=repr(e))
     log("Notification de lancement envoyée sur le téléphone.")
-    notify_phone("Bot One Piece lancé", body, priority=3, tags=("rocket",))
+    notify_phone("Bot One Piece lancé", body, priority=config.HEARTBEAT_PRIORITY, tags=("rocket",))
     state["dernier_signe_de_vie"] = time.time()
 
 

@@ -35,6 +35,9 @@ except ImportError:
 # n'est détecté, avec la liste des événements en ligne. En secondes ; 0 pour désactiver.
 # 7200 = toutes les 2 h, 1800 = toutes les 30 min.
 HEARTBEAT_INTERVAL = 7200
+# Priorité ntfy du signe de vie et de la notif de lancement : 3 = normale, 4 = haute
+# (bannière + son), 5 = urgente (passe même en mode Ne pas déranger)
+HEARTBEAT_PRIORITY = 4
 
 # Textes des boutons tels qu'affichés sur le site (en français).
 # Les apostrophes ' et ’ sont traitées comme équivalentes.
