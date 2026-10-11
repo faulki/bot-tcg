@@ -1,0 +1,32 @@
+name: Surveillance Bandai TCG+
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"   # toutes les 10 min (GitHub peut prendre quelques minutes de retard)
+  workflow_dispatch:          # bouton « Run workflow » pour lancer à la main
+
+permissions:
+  contents: write             # pour sauvegarder etat_surveillance.json dans le dépôt
+
+concurrency:
+  group: surveille            # jamais deux vérifications en même temps
+
+jobs:
+  verification:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Vérification
+        run: python3 surveille.py --once
+        env:
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+
+      - name: Sauvegarde de l'état
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add etat_surveillance.json
+          git diff --cached --quiet || (git commit -m "Etat de surveillance" && git push)

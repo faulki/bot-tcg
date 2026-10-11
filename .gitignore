@@ -1,0 +1,8 @@
+# Ne jamais publier : contient ta connexion Bandai TCG+
+profil_navigateur/
+# Topic ntfy privé
+config_local.py
+
+captures/
+inscriptions.json
+__pycache__/
