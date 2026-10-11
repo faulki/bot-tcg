@@ -304,6 +304,8 @@ def main():
     ap.add_argument("--once", action="store_true", help="une seule vérification")
     ap.add_argument("--test", action="store_true", help="envoie une notification de test")
     ap.add_argument("--liste", action="store_true", help="affiche les événements en ligne")
+    ap.add_argument("--signe-de-vie", action="store_true",
+                    help="avec --once : envoie le signe de vie même si le dernier est récent")
     args = ap.parse_args()
 
     if args.test:
@@ -318,6 +320,8 @@ def main():
     no_shop = f"Vérification régulière, pas encore de tournoi {config.SHOP_NAME}"
     if args.once:
         # Une seule vérification (GitHub Actions / tâche planifiée) : l'état est gardé entre les lancements
+        if args.signe_de_vie:
+            state["dernier_signe_de_vie"] = 0
         try:
             events = fetch_events()
             event, found = check_list(args.event, state, events)

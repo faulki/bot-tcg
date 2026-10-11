@@ -16,10 +16,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 8
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Vérification
-        run: python3 surveille.py --once
+        # Lancement à la main (« Run workflow ») : envoie toujours une notif, pour tester
+        run: python3 surveille.py --once ${{ github.event_name == 'workflow_dispatch' && '--signe-de-vie' || '' }}
         env:
           NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
 
