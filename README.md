@@ -35,7 +35,7 @@ L'état (numéros déjà vus, alertes déjà envoyées) est gardé dans `etat_su
 ### Faire tourner sans PC (gratuit) : GitHub Actions
 
 Le fichier `.github/workflows/surveille.yml` fait tourner `python3 surveille.py --once` sur les
-serveurs de GitHub toutes les 10 min, et sauvegarde `etat_surveillance.json` dans le dépôt.
+serveurs de GitHub toutes les 10 min (déclenché par cron-job.org), et sauvegarde `etat_surveillance.json` dans le dépôt.
 
 1. Crée un compte sur https://github.com, puis un dépôt **public** (illimité ; privé = 2000 min/mois, trop peu).
 2. Dans le dépôt : Settings → Secrets and variables → Actions → New repository secret :
@@ -50,6 +50,18 @@ serveurs de GitHub toutes les 10 min, et sauvegarde `etat_surveillance.json` dan
    ```
    (`.gitignore` empêche de publier `profil_navigateur/` et `config_local.py`.)
 4. Onglet **Actions** → « Surveillance Bandai TCG+ » → **Run workflow** pour un premier test.
+5. **Lancement toutes les 10 min (indispensable)** : le cron intégré de GitHub saute la plupart
+   des lancements, on le fait donc déclencher par https://cron-job.org (gratuit).
+   - GitHub → photo de profil → Settings → Developer settings → Personal access tokens →
+     **Fine-grained tokens** → Generate new token : accès au seul dépôt du bot, permission
+     **Contents : Read and write**, expiration la plus longue possible. Copie le jeton.
+   - cron-job.org → Create cronjob :
+     - URL : `https://api.github.com/repos/<ton-pseudo>/<ton-depot>/dispatches`
+     - Planification : toutes les 10 minutes
+     - Onglet Advanced : méthode **POST**, en-têtes
+       `Authorization: Bearer <le jeton>`, `Accept: application/vnd.github+json`,
+       `Content-Type: application/json`, corps `{"event_type": "verification"}`
+   - Une réponse **204** = OK. Les lancements apparaissent dans l'onglet Actions (« repository_dispatch »).
 
 Avant de modifier le code sur le PC, fais `git pull` (le bot y enregistre son état).
 

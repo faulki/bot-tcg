@@ -1,8 +1,12 @@
 name: Surveillance Bandai TCG+
 
 on:
+  # Déclencheur principal : cron-job.org appelle l'API GitHub toutes les 10 min (voir README).
+  # Le cron de GitHub n'est pas fiable (seulement 4 lancements en 20 h sur ce dépôt).
+  repository_dispatch:
+    types: [verification]
   schedule:
-    - cron: "*/10 * * * *"   # toutes les 10 min (GitHub peut prendre quelques minutes de retard)
+    - cron: "17 * * * *"      # filet de sécurité si cron-job.org tombe en panne
   workflow_dispatch:          # bouton « Run workflow » pour lancer à la main
 
 permissions:

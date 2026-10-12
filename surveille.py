@@ -150,8 +150,9 @@ def notify_startup(title, state):
 
 
 def heartbeat_due(state):
+    # Marge de 5 min : les lancements GitHub arrivent rarement pile à l'heure
     return (config.HEARTBEAT_INTERVAL > 0
-            and time.time() - state.get("dernier_signe_de_vie", 0) >= config.HEARTBEAT_INTERVAL)
+            and time.time() - state.get("dernier_signe_de_vie", 0) >= config.HEARTBEAT_INTERVAL - 300)
 
 
 # ---------------------------------------------------------------------------
