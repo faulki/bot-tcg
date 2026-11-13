@@ -1,5 +1,5 @@
 """Surveille Bandai TCG+ et prévient (PC + téléphone) dès que l'événement configuré
-(par défaut « [November 2026] OP Store Tournament Event ») est mis en ligne.
+(par défaut « [December 2026] OP Store Tournament Event ») est mis en ligne.
 
 Pas besoin de navigateur ni de compte : le script interroge directement l'API
 publique utilisée par le site.
@@ -63,9 +63,15 @@ def fetch_events():
         offset += limit
 
 
+def title_matches(candidate, title):
+    """Le titre contient celui recherché, sans être une variante d'une autre région."""
+    candidate = (candidate or "").lower()
+    return (title.lower().strip() in candidate
+            and not any(x in candidate for x in getattr(config, "EVENT_TITLE_EXCLUDE", [])))
+
+
 def find_event(events, title):
-    wanted = title.lower().strip()
-    return next((e for e in events if wanted in e["title"].lower()), None)
+    return next((e for e in events if title_matches(e["title"], title)), None)
 
 
 # ---------------------------------------------------------------------------
@@ -256,11 +262,13 @@ def check_hidden(title, state):
     création, avant même qu'il apparaisse sur la page d'accueil."""
     known = set(state["ids_connus"])
     max_id = state["max_id"]
-    wanted = title.lower().strip()
 
-    # Trous récents (événements d'autres régions ou brouillons qui peuvent être publiés plus tard)
+    # Numéros surveillés en direct (événement déjà créé mais caché), puis trous récents
+    # (événements d'autres régions ou brouillons qui peuvent être publiés plus tard)
     # + nouveaux numéros au-delà du plus grand connu
-    to_check = [i for i in range(max_id - config.SCAN_RECHECK_WINDOW, max_id + 1) if i not in known]
+    extra = [i for i in getattr(config, "SCAN_EXTRA_IDS", []) if f"coulisses:{i}" not in state["notifie"]]
+    to_check = extra + [i for i in range(max_id - config.SCAN_RECHECK_WINDOW, max_id + 1)
+                        if i not in known and i not in extra]
     log(f"Coulisses : scan des numéros d'événements en cours (environ {len(to_check) + config.SCAN_FORWARD_MISSES} "
         f"numéros, 1 à 2 min)…")
     misses, i = 0, max_id + 1
@@ -283,7 +291,7 @@ def check_hidden(title, state):
             misses = 0
         known.add(sid)
         max_id = max(max_id, sid)
-        if wanted in data["event_series_title"].lower():
+        if title_matches(data["event_series_title"], title):
             key = f"coulisses:{sid}"
             if key not in state["notifie"]:
                 terms = data.get("terms") or [{}]

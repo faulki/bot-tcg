@@ -30,6 +30,12 @@ En plus, sur le téléphone :
 - une notif **« Vérification régulière, pas de nouvel event détecté »** toutes les 2 h
   (`HEARTBEAT_INTERVAL` dans `config.py`), avec la liste des événements en ligne.
 
+Astuce : Bandai crée les événements boutique OP des mois à l'avance, avec des numéros qui se
+suivent (8034 = octobre, 8035 = novembre). Le numéro du mois suivant existe déjà mais renvoie 404
+tant qu'il est caché : mets-le dans `SCAN_EXTRA_IDS` (`config.py`), il est vérifié à chaque passage.
+Pour passer au mois suivant : change `EVENT_TITLE`, et `SCAN_EXTRA_IDS` si tu as repéré le numéro
+(8036 = décembre ; le trimestre suivant aura sans doute une nouvelle série de numéros).
+
 L'état (numéros déjà vus, alertes déjà envoyées) est gardé dans `etat_surveillance.json`.
 
 ### Faire tourner sans PC (gratuit) : GitHub Actions
@@ -70,7 +76,7 @@ Avant de modifier le code sur le PC, fais `git pull` (le bot y enregistre son é
 ## Inscription automatique (ancien bot) : `bot.py`
 
 Surveille la page d'accueil de Bandai TCG+. Dès que l'événement configuré apparaît
-(par défaut `[November 2026] OP Store Tournament Event`), il :
+(par défaut `[December 2026] OP Store Tournament Event`), il :
 
 1. clique sur **Détails de l'événement**
 2. clique sur **Confirmer série de tournoi**

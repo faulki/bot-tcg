@@ -3,7 +3,10 @@
 # ---------------------------------------------------------------------------
 
 # Nom exact (ou partiel) de l'événement à surveiller sur la page d'accueil
-EVENT_TITLE = "[November 2026] OP Store Tournament Event"
+EVENT_TITLE = "[December 2026] OP Store Tournament Event"
+
+# Variantes d'autres régions à ignorer (ex : « [November 2026] OP Store Tournament Event (middle east) »)
+EVENT_TITLE_EXCLUDE = ["middle east", "north america", "latin america", "oceania", "brazil", "asia"]
 
 # Boutique à laquelle s'inscrire
 SHOP_NAME = "One Piece Official Shop Paris"
@@ -20,6 +23,10 @@ SCAN_INTERVAL = 600         # vérifie les nouveaux numéros toutes les 10 min
 SCAN_START_ID = 8600        # point de départ au 1er lancement (octobre = 8034)
 SCAN_FORWARD_MISSES = 30    # s'arrête après 30 numéros vides d'affilée
 SCAN_RECHECK_WINDOW = 150   # revérifie les trous parmi les 150 derniers numéros
+# Numéros vérifiés à chaque passage, même anciens. Bandai crée les événements boutique OP
+# longtemps à l'avance, à la suite : 8034 = octobre, 8035 = novembre, 8036 = existe mais caché
+# (404) en novembre 2026 → très probablement décembre.
+SCAN_EXTRA_IDS = [8036]
 
 # Notifications push sur ton téléphone via https://ntfy.sh (gratuit, sans compte).
 # 1. Installe l'app "ntfy" sur ton téléphone
